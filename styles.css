@@ -21,5 +21,11 @@ html {
 body {
   box-sizing: border-box;
   font-size: 1.6rem;
+  overflow: hidden;
+}
+
+#canvas {
   background-color: #092635;
+  width: 100vw;
+  height: 100vh;
 }
