@@ -38,9 +38,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   window.addEventListener('resize', onResize);
-  canvas.addEventListener('mousemove', onMouseMove);
-  canvas.addEventListener('mousedown', onMouseDown);
-  canvas.addEventListener('mouseup', onMouseUp);
   let previousPoint = null,
       selectedPoint = null,
       mPrevX = 0,
@@ -54,37 +51,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   ];
 
   onResize();
-
-  function onMouseMove(e) {
-    if (!isDragging) return;
-
-    canvas.style.cursor = 'grabbing';
-
-    selectedPoint.shift(e.clientX - mPrevX,
-                        e.clientY - mPrevY
-    );
-
-    mPrevX = e.clientX;
-    mPrevY = e.clientY;
-
-    drawCurve();
-  }
-
-  function onMouseDown(e) {
-    for (const point of curve) {
-      if (Math.abs(e.clientX - point.x) < 10 && Math.abs(e.clientY - point.y) < 10) {
-        mPrevX = e.clientX;
-        mPrevY = e.clientY;
-        selectedPoint = point;
-        isDragging = true;
-      }
-    }
-  }
-
-  function onMouseUp(e) {
-    isDragging = false;
-    canvas.style.cursor = 'default';
-  }
+  
 
   function drawCurve() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -115,4 +82,35 @@ window.addEventListener('DOMContentLoaded', async () => {
     canvas.height = window .innerHeight;
     drawCurve();
   }
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    canvas.style.cursor = 'grabbing';
+
+    selectedPoint.shift(e.clientX - mPrevX,
+                        e.clientY - mPrevY
+    );
+
+    mPrevX = e.clientX;
+    mPrevY = e.clientY;
+
+    drawCurve();
+  });
+
+  canvas.addEventListener('mousedown', (e) => {
+    for (const point of curve) {
+      if (Math.abs(e.clientX - point.x) < 10 && Math.abs(e.clientY - point.y) < 10) {
+        mPrevX = e.clientX;
+        mPrevY = e.clientY;
+        selectedPoint = point;
+        isDragging = true;
+      }
+    }
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    isDragging = false;
+    canvas.style.cursor = 'default';
+  });
 });
