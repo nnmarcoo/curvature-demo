@@ -27,12 +27,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       this.controls[2] += x;
       this.controls[3] += y;
     }
-
-    equals(other) {
-      if (!(other instanceof point)) 
-        return false;
-      return this.x === other.x && this.y === other.y;
-    }
   }
 
   const canvas = document.getElementById('canvas');
