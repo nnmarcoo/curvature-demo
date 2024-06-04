@@ -51,7 +51,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   ];
 
   onResize();
-  
+
 
   function drawCurve() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -109,7 +109,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  canvas.addEventListener('mouseup', () => {
+  document.addEventListener('mouseup', () => {
     isDragging = false;
     canvas.style.cursor = 'default';
   });
