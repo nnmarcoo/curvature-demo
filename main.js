@@ -22,10 +22,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       this.y += y;
       this.controls[0] += x;
       this.controls[1] += y;
-      if (this.controls.length > 2) {
-        this.controls[2] += x;
-        this.controls[3] += y;
-      }
+
+      if (this.isEnd) return;
+      this.controls[2] += x;
+      this.controls[3] += y;
     }
 
     equals(other) {
