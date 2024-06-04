@@ -1,9 +1,11 @@
 window.addEventListener('DOMContentLoaded', async () => {
 
   class point {
-    constructor(x, y) {
+    constructor(x, y, controls, isEnd = false) {
       this.x = x;
       this.y = y;
+      this.controls = controls;
+      this.isEnd = isEnd;
     }
 
     draw(ctx) {
@@ -22,62 +24,46 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  class curve {
-    constructor(start, startControl, end, endControl) {
-      this.start = start;
-      this.startControl = startControl;
-      this.end = end;
-      this.endControl = endControl;
-    }
-
-    drawLine(ctx) {
-      ctx.beginPath();
-      ctx.moveTo(this.start.x, this.start.y);
-      ctx.bezierCurveTo(
-        this.startControl.x, this.startControl.y,
-        this.endControl.x, this.endControl.y,
-        this.end.x, this.end.y
-      );
-      ctx.strokeStyle = '#9EC8B9';
-      ctx.stroke();
-    }
-
-    drawPoints(ctx) {
-      
-    }
-  }
-
-  let curves = [
-    new curve(
-      new point(0,0),
-      new point(50,0),
-      new point(100,100),
-      new point(50,100)
-    ),
-    new curve(
-      new point(100,100),
-      new point(150,100),
-      new point(200,0),
-      new point(150,0)
-    )
-  ];
-
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   window.addEventListener('resize', onResize);
+  let previousPoint = null;
+  
+  let curve = [
+    new point(0, 0, [50, 0], true),
+    new point(100, 100, [50, 100, 150, 100]),
+    new point(200, 0, [150, 0])
+  ];
 
   onResize();
-  draw();
 
-  function draw() {
+  function drawCurve() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    for (const curve of curves)
-      curve.drawLine(ctx);
+    for (const point of curve) {
+      if (previousPoint) {
+        ctx.beginPath();
+        ctx.moveTo(previousPoint.x, previousPoint.y);
+
+        let controlSide = previousPoint.isEnd ? 0 : 2;
+        ctx.bezierCurveTo(previousPoint.controls[controlSide    ], 
+                          previousPoint.controls[controlSide + 1], 
+                          point.controls[0], 
+                          point.controls[1],
+                          point.x, point.y);
+        
+        ctx.strokeStyle = '#9EC8B9';
+        ctx.stroke();
+
+        previousPoint.draw(ctx);
+      }
+      previousPoint = point;
+    }
+    previousPoint.draw(ctx);
   }
 
   function onResize() {
     canvas.width = window.innerWidth;
     canvas.height = window .innerHeight;
-    draw();
+    drawCurve();
   }
 });
