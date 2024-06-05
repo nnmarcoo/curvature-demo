@@ -73,13 +73,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   function onResize() {
     canvas.width = window.innerWidth;
-    canvas.height = window .innerHeight;
+    canvas.height = window.innerHeight;
     drawCurve();
   }
 
   canvas.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-
     canvas.style.cursor = 'grabbing';
 
     selectedPoint.shift(e.clientX - mPrevX,
@@ -88,7 +87,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     mPrevX = e.clientX;
     mPrevY = e.clientY;
-
     drawCurve();
   });
 
