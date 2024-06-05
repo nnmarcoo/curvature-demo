@@ -31,6 +31,18 @@ window.addEventListener('DOMContentLoaded', async () => {
       this.controls[2] += x;
       this.controls[3] += y;
     }
+
+    shiftControl(x, y) {
+      if (selectedControl === this.controls.slice(0, 2)) {
+        this.controls[0] += x;
+        this.controls[1] += y;
+      }
+      else {
+        this.controls[2] += x;
+        this.controls[3] += y;
+      }
+
+    }
   }
 
   const canvas = document.getElementById('canvas');
@@ -38,6 +50,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('resize', onResize);
   let previousPoint = null,
       selectedPoint = null,
+      selectedControl = null,
       mPrevX = 0,
       mPrevY = 0,
       isDragging = false;
@@ -126,7 +139,18 @@ window.addEventListener('DOMContentLoaded', async () => {
         mPrevY = e.clientY;
         selectedPoint = point;
         isDragging = true;
+        break;
       }
+
+      for (let i = 0; i < point.controls.length; i+=2)
+        if (Math.abs(e.clientX - point.controls[i]) < 10 && Math.abs(e.clientY - point.controls[i+1]) < 10) {
+          selectedControl = [point.controls[i], point.controls[i+1]];
+          selectedPoint = point;
+          isDragging = true;
+          mPrevX = e.clientX;
+          mPrevY = e.clientY;
+          break;
+        }
     }
   });
 
