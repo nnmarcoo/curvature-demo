@@ -1,5 +1,9 @@
 window.addEventListener('DOMContentLoaded', async () => {
 
+  const LINE_FILL = '#9EC8B9';
+  const POINT_FILL = '#1B4242';
+  const POINT_OUTLINE = '#5C8374';
+
   class point {
     constructor(x, y, controls, isEnd = false) {
       this.x = x;
@@ -8,13 +12,13 @@ window.addEventListener('DOMContentLoaded', async () => {
       this.isEnd = isEnd;
     }
 
-    draw(ctx) {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#5C8374';
-      ctx.stroke();
-      ctx.fillStyle = '#1B4242';
-      ctx.fill();
+    draw(ctx, drawControls = true) {
+      drawCircle(ctx, this.x, this.y, 5);
+
+      if (!drawControls) return;
+      drawCircle(ctx, this.controls[0], this.controls[1], 6);
+      if (this.isEnd) return;
+      drawCircle(ctx, this.controls[2], this.controls[3], 6);
     }
 
     shift(x, y) {
@@ -61,7 +65,8 @@ window.addEventListener('DOMContentLoaded', async () => {
                           point.controls[1],
                           point.x, point.y);
         
-        ctx.strokeStyle = '#9EC8B9';
+        ctx.strokeStyle = LINE_FILL;
+        ctx.lineWidth = 2;
         ctx.stroke();
 
         previousPoint.draw(ctx);
@@ -75,6 +80,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     drawCurve();
+  }
+
+  function drawCircle(ctx, x, y, radius) {
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.strokeStyle = POINT_OUTLINE;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.fillStyle = POINT_FILL;
+    ctx.fill();
   }
 
   canvas.addEventListener('mousemove', (e) => {
