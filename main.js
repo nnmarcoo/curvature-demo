@@ -45,7 +45,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   let curve = [
     new point(0, 0, [50, 0], true),
     new point(100, 100, [50, 100, 150, 100]),
-    new point(200, 0, [150, 0])
+    new point(200, 0, [150, 0, 250, 0]),
+    new point(300, 100, [250, 100])
   ];
 
   onResize();
@@ -77,8 +78,21 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function onResize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    let ratio = (() => {
+      let dpr = window.devicePixelRatio || 1,
+          bsr = ctx.webkitBackingStorePixelRatio ||
+                ctx.mozBackingStorePixelRatio ||
+                ctx.msBackingStorePixelRatio ||
+                ctx.oBackingStorePixelRatio ||
+                ctx.backingStorePixelRatio || 1;
+      return dpr / bsr;
+    })();
+
+    canvas.width = canvas.parentElement.offsetWidth * ratio;
+    canvas.height = canvas.parentElement.offsetHeight * ratio;
+    canvas.style.width = canvas.parentElement.offsetWidth + 'px';
+    canvas.style.height = canvas.parentElement.offsetHeight + 'px';
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     drawCurve();
   }
 
