@@ -32,16 +32,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       this.controls[3] += y;
     }
 
-    shiftControl(x, y) {
-      if (selectedControl === this.controls.slice(0, 2)) {
-        this.controls[0] += x;
-        this.controls[1] += y;
-      }
-      else {
-        this.controls[2] += x;
-        this.controls[3] += y;
-      }
-
+    shiftControl(i, x, y) {
+        this.controls[i    ] += x;
+        this.controls[i + 1] += y;
     }
   }
 
@@ -50,7 +43,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('resize', onResize);
   let previousPoint = null,
       selectedPoint = null,
-      selectedControl = null,
       mPrevX = 0,
       mPrevY = 0,
       isDragging = false;
@@ -119,13 +111,31 @@ window.addEventListener('DOMContentLoaded', async () => {
     ctx.fill();
   }
 
+  function getSelectedPoint(x, y) {
+    for (const point of curve) {
+      if (Math.abs(x - point.x) < 10 && Math.abs(y - point.y) < 10)
+        return point
+      for (let i = 0; i < point.controls.length; i+=2)
+        if (Math.abs(x - point.controls[i]) < 10 && Math.abs(y - point.controls[i+1]) < 10)
+          return [point, i];
+    }
+  }
+
   canvas.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     canvas.style.cursor = 'grabbing';
 
-    selectedPoint.shift(e.clientX - mPrevX,
-                        e.clientY - mPrevY
-    );
+    if (!selectedPoint.length) {
+      selectedPoint.shift(e.clientX - mPrevX,
+                          e.clientY - mPrevY
+      );
+    }
+    else {
+      selectedPoint[0].shiftControl(selectedPoint[1],
+                                    e.clientX - mPrevX,
+                                    e.clientY - mPrevY
+      );
+    }
 
     mPrevX = e.clientX;
     mPrevY = e.clientY;
@@ -133,24 +143,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   });
 
   canvas.addEventListener('mousedown', (e) => {
-    for (const point of curve) {
-      if (Math.abs(e.clientX - point.x) < 10 && Math.abs(e.clientY - point.y) < 10) {
-        mPrevX = e.clientX;
-        mPrevY = e.clientY;
-        selectedPoint = point;
-        isDragging = true;
-        break;
-      }
-
-      for (let i = 0; i < point.controls.length; i+=2)
-        if (Math.abs(e.clientX - point.controls[i]) < 10 && Math.abs(e.clientY - point.controls[i+1]) < 10) {
-          selectedControl = [point.controls[i], point.controls[i+1]];
-          selectedPoint = point;
-          isDragging = true;
-          mPrevX = e.clientX;
-          mPrevY = e.clientY;
-          break;
-        }
+    const selected = getSelectedPoint(e.clientX, e.clientY);
+    if (selected) {
+      mPrevX = e.clientX;
+      mPrevY = e.clientY;
+      selectedPoint = selected;
+      isDragging = true;
     }
   });
 
