@@ -4,6 +4,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   const POINT_FILL = '#1B4242';
   const POINT_OUTLINE = '#5C8374';
 
+  const CURVE_THICKNESS = 3;
+  const CTRL_LINE_THICKNESS = 2;
   const POINT_RADIUS = 5;
   const CTRL_RADIUS = 6;
 
@@ -19,12 +21,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     draw(ctx, drawControls = true) {
+      if (drawControls) {
+        drawLine(ctx, this.x, this.y, this.controls[0], this.controls[1]);
+        drawCircle(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
+        if (this.isEnd) return;
+        drawLine(ctx, this.x, this.y, this.controls[2], this.controls[3]);
+        drawCircle(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
+      }
       drawCircle(ctx, this.x, this.y, POINT_RADIUS);
-
-      if (!drawControls) return;
-      drawCircle(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
-      if (this.isEnd) return;
-      drawCircle(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
     }
 
     shift(x, y) {
@@ -78,7 +82,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                           point.x, point.y);
         
         ctx.strokeStyle = LINE_FILL;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = CURVE_THICKNESS;
         ctx.stroke();
 
         previousPoint.draw(ctx);
@@ -115,6 +119,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     ctx.stroke();
     ctx.fillStyle = POINT_FILL;
     ctx.fill();
+  }
+
+  function drawLine(ctx, x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = POINT_OUTLINE;
+    ctx.lineWidth = CTRL_LINE_THICKNESS;
+    ctx.stroke();
   }
 
   function getSelectedPoint(x, y) {
