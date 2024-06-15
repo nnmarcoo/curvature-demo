@@ -4,6 +4,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   const POINT_FILL = '#1B4242';
   const POINT_OUTLINE = '#5C8374';
 
+  const POINT_RADIUS = 5;
+  const CTRL_RADIUS = 6;
+
+  const POINT_HITBOX = POINT_RADIUS*2;
+  const CTRL_HITBOX = CTRL_RADIUS*2;
+
   class point {
     constructor(x, y, controls, isEnd = false) {
       this.x = x;
@@ -13,12 +19,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     draw(ctx, drawControls = true) {
-      drawCircle(ctx, this.x, this.y, 5);
+      drawCircle(ctx, this.x, this.y, POINT_RADIUS);
 
       if (!drawControls) return;
-      drawCircle(ctx, this.controls[0], this.controls[1], 6);
+      drawCircle(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
       if (this.isEnd) return;
-      drawCircle(ctx, this.controls[2], this.controls[3], 6);
+      drawCircle(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
     }
 
     shift(x, y) {
@@ -113,10 +119,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   function getSelectedPoint(x, y) {
     for (const point of curve) {
-      if (Math.abs(x - point.x) < 10 && Math.abs(y - point.y) < 10)
+      if (Math.abs(x - point.x) < POINT_HITBOX && Math.abs(y - point.y) < POINT_HITBOX)
         return point
       for (let i = 0; i < point.controls.length; i+=2)
-        if (Math.abs(x - point.controls[i]) < 10 && Math.abs(y - point.controls[i+1]) < 10)
+        if (Math.abs(x - point.controls[i]) < CTRL_HITBOX && Math.abs(y - point.controls[i+1]) < CTRL_HITBOX)
           return [point, i];
     }
   }
