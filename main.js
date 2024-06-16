@@ -1,4 +1,6 @@
 window.addEventListener('DOMContentLoaded', async () => {
+  
+  const controlToggle = document.getElementById('controls-check');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';
@@ -20,8 +22,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       this.isEnd = isEnd;
     }
 
-    draw(ctx, drawControls = true) {
-      if (drawControls) {
+    draw(ctx) {
+      if (!controlToggle.checked) {
         drawLine(ctx, this.x, this.y, this.controls[0], this.controls[1]);
         drawCircle(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
         if (!this.isEnd) {
@@ -68,6 +70,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   ];
 
   onResize();
+
 
 
   function drawCurve() {
@@ -179,5 +182,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('mouseup', () => {
     isDragging = false;
     canvas.style.cursor = 'default';
+  });
+
+  controlToggle.addEventListener('change', () => {
+    drawCurve();
   });
 });

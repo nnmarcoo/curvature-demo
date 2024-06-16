@@ -16,10 +16,24 @@ body {
   font-size: 1.6rem;
   overflow: hidden;
   background-color: #092635;
+  color:whitesmoke;
 }
 
 #canvas {
   background-color: #092635;
   width: 100vw;
   height: 100vh;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  position: absolute;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 10px;
+  border-radius: .25rem;
 }
