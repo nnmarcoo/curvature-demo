@@ -24,9 +24,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       if (drawControls) {
         drawLine(ctx, this.x, this.y, this.controls[0], this.controls[1]);
         drawCircle(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
-        if (this.isEnd) return;
-        drawLine(ctx, this.x, this.y, this.controls[2], this.controls[3]);
-        drawCircle(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
+        if (!this.isEnd) {
+          drawLine(ctx, this.x, this.y, this.controls[2], this.controls[3]);
+          drawCircle(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
+        }
       }
       drawCircle(ctx, this.x, this.y, POINT_RADIUS);
     }
