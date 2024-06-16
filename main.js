@@ -58,11 +58,11 @@ window.addEventListener('DOMContentLoaded', async () => {
       mPrevY = 0,
       isDragging = false;
 
+  const initX = window.innerWidth/2;
+  const initY = window.innerHeight/2;
+
   let curve = [
-    new point(0, 0, [50, 0], true),
-    new point(100, 100, [50, 100, 150, 100]),
-    new point(200, 0, [150, 0, 250, 0]),
-    new point(300, 100, [250, 100])
+    new point(initX, initY, [initX, initY])
   ];
 
   onResize();
