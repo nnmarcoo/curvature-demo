@@ -131,14 +131,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     ctx.stroke();
   }
 
-  function getSelectedPoint(x, y) {
+  function getSelectedPoint(x, y) { //could this be better
+    let found = null;
     for (const point of curve) {
       if (Math.abs(x - point.x) < POINT_HITBOX && Math.abs(y - point.y) < POINT_HITBOX)
-        return point
+        found = point;
       for (let i = 0; i < point.controls.length; i+=2)
         if (Math.abs(x - point.controls[i]) < CTRL_HITBOX && Math.abs(y - point.controls[i+1]) < CTRL_HITBOX)
           return [point, i];
     }
+    return found;
   }
 
   canvas.addEventListener('mousemove', (e) => {
