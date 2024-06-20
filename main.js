@@ -138,7 +138,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     ctx.stroke();
   }
 
-  function getSelectedPoint(x, y) { //could this be better
+  function getSelectedPoint(x, y) {
     let found = null;
     for (const point of curve) {
       if (Math.abs(x - point.x) < POINT_HITBOX && Math.abs(y - point.y) < POINT_HITBOX)
