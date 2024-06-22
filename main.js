@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', async () => {
   
   const controlToggle = document.getElementById('controls-check');
+  const animatedToggle = document.getElementById('animated-check');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';

@@ -1,17 +1,26 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <title>Curvature Demo</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="main.js" defer></script>
-  </head>
-  <body>
-    <div class="checkbox">
+</head>
+<body>
+  <div class="controls">
+    <div>
       <input type="checkbox" id="controls-check">
-      <label class="non-selectable" for="controls-check">Hide Controls</label>
+      <label for="controls-check">Hide Controls</label>
     </div>
-      <canvas id="canvas"></canvas>
-  </body>
+    <div>
+      <input type="checkbox" id="animated-check">
+      <label for="animated-check">Animated</label>
+    </div>
+    <div class="slider">
+      <input id="slider" type="range" min="1" max="1000" value="50">
+    </div>
+  </div>
+  <canvas id="canvas"></canvas>
+</body>
 </html>

@@ -3,8 +3,8 @@
 *::after {
   margin: 0;
   padding: 0;
-  box-sizing: inherit;
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  box-sizing: border-box;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 html {
@@ -12,11 +12,10 @@ html {
 }
 
 body {
-  box-sizing: border-box;
   font-size: 1.6rem;
   overflow: hidden;
   background-color: #092635;
-  color:whitesmoke;
+  color: whitesmoke;
 }
 
 #canvas {
@@ -25,24 +24,32 @@ body {
   height: 100vh;
 }
 
-.checkbox {
+.controls {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 130px;
+  height: 100px;
+  margin: 25px;
+  gap: 5px;
+}
+
+.controls div {
   display: flex;
   align-items: center;
-  position: absolute;
 }
 
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
   margin-right: 10px;
-  margin-top: 25px;
-  margin-left: 25px;
-  margin-bottom: 25px;
-  border-radius: .25rem;
-  pointer-events: all;
 }
 
-.non-selectable {
+input[type="range"] {
+  width: 100%;
+}
+
+label {
   user-select: none; /* Standard property */
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
