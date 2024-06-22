@@ -59,8 +59,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       mPrevX = 0,
       mPrevY = 0,
       isDragging = false,
+      currentSegment = 0,
       t = 0;
-
 
   const initX = window.innerWidth/2;
   const initY = window.innerHeight/2;
@@ -92,7 +92,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const test = cubicBezier([previousPoint.x, previousPoint.y],
                                  [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
                                  [point.controls[0], point.controls[1]],
-                                 [point.x, point.y], .5);     
+                                 [point.x, point.y], t);     
 
         ctx.fillRect(test[0], test[1], 50, 50);
         
@@ -171,8 +171,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   canvas.addEventListener('mousemove', (e) => {
-    if (e.buttons & 1)
-
     if (!isDragging) return;
     canvas.style.cursor = 'grabbing';
 
@@ -187,8 +185,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                                     e.clientY - mPrevY
       );
     }
-
-    curveLength = getCurveLength();
 
     mPrevX = e.clientX;
     mPrevY = e.clientY;
