@@ -2,6 +2,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   
   const controlToggle = document.getElementById('controls-check');
   const animatedToggle = document.getElementById('animated-check');
+  const circleToggle = document.getElementById('hide-circle-check');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';
@@ -95,8 +96,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                                  [point.controls[0], point.controls[1]],
                                  [point.x, point.y], t);     
 
-        ctx.fillRect(test[0], test[1], 50, 50);
-        
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
         ctx.stroke();
