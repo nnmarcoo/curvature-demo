@@ -95,7 +95,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const test = cubicBezier([previousPoint.x, previousPoint.y],
                                  [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
                                  [point.controls[0], point.controls[1]],
-                                 [point.x, point.y], t);     
+                                 [point.x, point.y], t);
 
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
