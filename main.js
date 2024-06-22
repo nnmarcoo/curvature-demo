@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const controlToggle = document.getElementById('controls-check');
   const animatedToggle = document.getElementById('animated-check');
   const circleToggle = document.getElementById('hide-circle-check');
+  const slider = document.getElementById('slider');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';
@@ -170,6 +171,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     return [x, y];
   }
 
+  function animate() {
+    slider.value = slider.value + .01;
+    slider.dispatchEvent(new Event('input', {bubbles: true, cancelable: true,}));
+    drawCurve();
+    console.log(currentSegment - slider.value);
+    if (animatedToggle.checked)
+      window.requestAnimationFrame(animate);
+  }
+
   canvas.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     canvas.style.cursor = 'grabbing';
@@ -208,5 +218,15 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   controlToggle.addEventListener('change', () => {
     drawCurve();
+  });
+
+  animatedToggle.addEventListener('change', () => {
+    if (animatedToggle.checked)
+      window.requestAnimationFrame(animate);
+  });
+
+  slider.addEventListener('input', () => {
+    t = slider.value / 100
+    currentSegment = Math.floor(t);
   });
 });
