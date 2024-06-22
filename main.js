@@ -59,7 +59,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       mPrevX = 0,
       mPrevY = 0,
       isDragging = false,
-      curveLength = 0;
+      t = 0;
+
 
   const initX = window.innerWidth/2;
   const initY = window.innerHeight/2;
@@ -87,6 +88,13 @@ window.addEventListener('DOMContentLoaded', async () => {
                           point.controls[0], 
                           point.controls[1],
                           point.x, point.y);
+
+        const test = cubicBezier([previousPoint.x, previousPoint.y],
+                                 [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
+                                 [point.controls[0], point.controls[1]],
+                                 [point.x, point.y], .5);     
+
+        ctx.fillRect(test[0], test[1], 50, 50);
         
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
@@ -150,56 +158,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     return found;
   }
 
-  function getCurveLength() {
-    let total = 0;
-    for (const point of curve) {
-      if (previousPoint) {
-        let controlSide = previousPoint.isEnd ? 0 : 2;
-        total += bezierLength([previousPoint.x, previousPoint.y],
-                              [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
-                              [point.controls[0], point.controls[1]],
-                              [point.x, point.y]
-        );
-      }
-      previousPoint = point;
-    }
-    previousPoint = null;
-    return total;
-  }
-
-  function bezierLength(p0, p1, p2, p3, numSegments = 10) {
-    function bezierDerivative(t) {
-        const x = 3 * (1 - t) ** 2 * (p1[0] - p0[0]) +
-                  6 * (1 - t) * t * (p2[0] - p1[0]) +
-                  3 * t ** 2 * (p3[0] - p2[0]);
-
-        const y = 3 * (1 - t) ** 2 * (p1[1] - p0[1]) +
-                  6 * (1 - t) * t * (p2[1] - p1[1]) +
-                  3 * t ** 2 * (p3[1] - p2[1]);
-
-        return [x, y];
-    }
-
-    function magnitude(v) {
-        return Math.sqrt(v[0] ** 2 + v[1] ** 2);
-    }
-
-    function simpsonIntegral(numSegments) {
-        const step = 1 / numSegments;
-        let integral = 0;
-
-        for (let i = 0; i <= numSegments; i++) {
-            const t = i * step;
-            const weight = (i === 0 || i === numSegments) ? 1 : (i % 2 === 0) ? 2 : 4;
-            integral += weight * magnitude(bezierDerivative(t));
-        }
-
-        return (integral * step) / 3;
-    }
-
-    return simpsonIntegral(numSegments);
-}
-
   function cubicBezier(p0, p1, p2, p3, t) {
     const x = Math.pow(1 - t, 3) * p0[0] +
               3 * Math.pow(1 - t, 2) * t * p1[0] +
@@ -213,6 +171,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   canvas.addEventListener('mousemove', (e) => {
+    if (e.buttons & 1)
+
     if (!isDragging) return;
     canvas.style.cursor = 'grabbing';
 
