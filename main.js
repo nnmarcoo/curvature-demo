@@ -139,9 +139,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function drawBezierVisualCircle() {
-    let pointsOnCircle;
-    
-      pointsOnCircle = getPointsOnCircle(t+.001, t-.001, t);
+    let pointsOnCircle = getPointsOnCircle(t+.001, t-.001, t);
 
     let circleData = getRadiusAndCenter(pointsOnCircle[0][0], pointsOnCircle[0][1], pointsOnCircle[1][0], pointsOnCircle[1][1], pointsOnCircle[2][0], pointsOnCircle[2][1]);
     drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, .5);
