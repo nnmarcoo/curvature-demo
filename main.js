@@ -148,19 +148,20 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   function getPointsOnCircle(t0, t1, t2) {
     const controlSide = curve[currentSegment].isEnd ? 0 : 2;
-    return [cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
-                        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-                        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-                        [curve[currentSegment+1].x, curve[currentSegment+1].y], t0),
-            cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
-                        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-                        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-                        [curve[currentSegment+1].x, curve[currentSegment+1].y], t1),
-            cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
-                        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-                        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-                        [curve[currentSegment+1].x, curve[currentSegment+1].y], t2)];
-  }
+    const points = [];
+
+    for (let i = 0; i < 3; i++) {
+        points.push(cubicBezier(
+            [curve[currentSegment].x, curve[currentSegment].y],
+            [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+            [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+            [curve[currentSegment + 1].x, curve[currentSegment + 1].y],
+            [t0, t1, t2][i]
+        ));
+    }
+    return points;
+}
+
 
   function getRadiusAndCenter(x1, y1, x2, y2, x3, y3) { // gpt
     // Midpoints of chords AB and BC
