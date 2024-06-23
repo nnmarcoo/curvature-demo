@@ -140,12 +140,55 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   function drawBezierVisualCircle() {
     const controlSide = curve[currentSegment].isEnd ? 0 : 2;
+
+    const pointOnLineMinus = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
+      [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+      [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+      [curve[currentSegment+1].x, curve[currentSegment+1].y], t-.01);
+
     const pointOnLine = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
                                     [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
                                     [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
                                     [curve[currentSegment+1].x, curve[currentSegment+1].y], t);
+
+    const pointOnLineAdd = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
+      [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+      [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+      [curve[currentSegment+1].x, curve[currentSegment+1].y], t+.01);
     
-    drawPoint(ctx, pointOnLine[0], pointOnLine[1], 10, '#b86767', '#808080', 2, .5);
+    let circleData = getRadiusAndCenter(pointOnLineMinus[0], pointOnLineMinus[1], pointOnLine[0], pointOnLine[1], pointOnLineAdd[0], pointOnLineAdd[1]);
+      
+    drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, .5);
+    drawPoint(ctx, pointOnLine[0], pointOnLine[1], 2, '#b86767');
+  }
+
+  function getRadiusAndCenter(x1, y1, x2, y2, x3, y3) { // gpt
+    // Midpoints of chords AB and BC
+    const mxAB = (x1 + x2) / 2;
+    const myAB = (y1 + y2) / 2;
+    const mxBC = (x2 + x3) / 2;
+    const myBC = (y2 + y3) / 2;
+
+    // Slopes of AB and BC
+    const mAB = (y2 - y1) / (x2 - x1);
+    const mBC = (y3 - y2) / (x3 - x2);
+
+    // Slopes of perpendicular bisectors
+    const mPerpAB = -1 / mAB;
+    const mPerpBC = -1 / mBC;
+
+    // Equations of perpendicular bisectors
+    const bPerpAB = myAB - mPerpAB * mxAB;
+    const bPerpBC = myBC - mPerpBC * mxBC;
+
+    // Coordinates of the center (intersection of perpendicular bisectors)
+    const h = (bPerpBC - bPerpAB) / (mPerpAB - mPerpBC);
+    const k = mPerpAB * h + bPerpAB;
+
+    // Radius of the circle
+    const radius = Math.sqrt(Math.pow((x1 - h), 2) + Math.pow((y1 - k), 2));
+
+    return { center: { x: h, y: k }, radius: radius };
   }
 
   function drawLine(ctx, x1, y1, x2, y2) {
@@ -182,7 +225,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function animate() {
-    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 3 : 0; // Prob use deltaTime later
+    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 1 : 0; // Prob use deltaTime later
 
     updateCirclePosition();
     drawCurve();
