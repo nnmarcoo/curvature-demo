@@ -63,7 +63,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       mPrevY = 0,
       isDragging = false,
       currentSegment = 0,
-      t = 0;
+      t = .3;
 
   const initX = window.innerWidth/2;
   const initY = window.innerHeight/2;
