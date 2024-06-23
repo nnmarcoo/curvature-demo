@@ -139,27 +139,29 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function drawBezierVisualCircle() {
-    const controlSide = curve[currentSegment].isEnd ? 0 : 2;
-
-    const pointOnLineMinus = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
-      [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-      [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-      [curve[currentSegment+1].x, curve[currentSegment+1].y], t-.01);
-
-    const pointOnLine = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
-                                    [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-                                    [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-                                    [curve[currentSegment+1].x, curve[currentSegment+1].y], t);
-
-    const pointOnLineAdd = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
-      [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-      [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-      [curve[currentSegment+1].x, curve[currentSegment+1].y], t+.01);
+    let pointsOnCircle;
     
-    let circleData = getRadiusAndCenter(pointOnLineMinus[0], pointOnLineMinus[1], pointOnLine[0], pointOnLine[1], pointOnLineAdd[0], pointOnLineAdd[1]);
-      
+      pointsOnCircle = getPointsOnCircle(t+.001, t-.001, t);
+
+    let circleData = getRadiusAndCenter(pointsOnCircle[0][0], pointsOnCircle[0][1], pointsOnCircle[1][0], pointsOnCircle[1][1], pointsOnCircle[2][0], pointsOnCircle[2][1]);
     drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, .5);
-    drawPoint(ctx, pointOnLine[0], pointOnLine[1], 2, '#b86767');
+    drawPoint(ctx, pointsOnCircle[1][0], pointsOnCircle[1][1], 2, '#b86767');
+  }
+
+  function getPointsOnCircle(t0, t1, t2) {
+    const controlSide = curve[currentSegment].isEnd ? 0 : 2;
+    return [cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
+                        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+                        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+                        [curve[currentSegment+1].x, curve[currentSegment+1].y], t0),
+            cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
+                        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+                        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+                        [curve[currentSegment+1].x, curve[currentSegment+1].y], t1),
+            cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
+                        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+                        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+                        [curve[currentSegment+1].x, curve[currentSegment+1].y], t2)];
   }
 
   function getRadiusAndCenter(x1, y1, x2, y2, x3, y3) { // gpt
