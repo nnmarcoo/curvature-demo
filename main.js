@@ -143,7 +143,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     let circleData = getRadiusAndCenter(pointsOnCircle[0][0], pointsOnCircle[0][1], pointsOnCircle[1][0], pointsOnCircle[1][1], pointsOnCircle[2][0], pointsOnCircle[2][1]);
     drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, .5);
-    drawPoint(ctx, pointsOnCircle[1][0], pointsOnCircle[1][1], 2, '#b86767');
+    drawPoint(ctx, pointsOnCircle[2][0], pointsOnCircle[2][1], 2, '#b86767');
   }
 
   function getPointsOnCircle(t0, t1, t2) {
