@@ -28,13 +28,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     draw(ctx) {
       if (!controlToggle.checked) {
         drawLine(ctx, this.x, this.y, this.controls[0], this.controls[1]);
-        drawCircle(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
+        drawPoint(ctx, this.controls[0], this.controls[1], CTRL_RADIUS);
         if (!this.isEnd) {
           drawLine(ctx, this.x, this.y, this.controls[2], this.controls[3]);
-          drawCircle(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
+          drawPoint(ctx, this.controls[2], this.controls[3], CTRL_RADIUS);
         }
       }
-      drawCircle(ctx, this.x, this.y, POINT_RADIUS);
+      drawPoint(ctx, this.x, this.y, POINT_RADIUS);
     }
 
     shift(x, y) {
@@ -85,17 +85,21 @@ window.addEventListener('DOMContentLoaded', async () => {
         ctx.beginPath();
         ctx.moveTo(previousPoint.x, previousPoint.y);
 
-        let controlSide = previousPoint.isEnd ? 0 : 2;
+        const controlSide = previousPoint.isEnd ? 0 : 2;
         ctx.bezierCurveTo(previousPoint.controls[controlSide    ], 
                           previousPoint.controls[controlSide + 1], 
                           point.controls[0], 
                           point.controls[1],
+<<<<<<< Updated upstream
                           point.x, point.y);
 
         const test = cubicBezier([previousPoint.x, previousPoint.y],
                                  [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
                                  [point.controls[0], point.controls[1]],
                                  [point.x, point.y], t);
+=======
+                          point.x, point.y);  
+>>>>>>> Stashed changes
 
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
@@ -107,6 +111,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
     previousPoint.draw(ctx);
     previousPoint = null;
+    if (!circleToggle.checked)
+      drawBezierVisualCircle();
   }
 
   function onResize() {
@@ -128,7 +134,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     drawCurve();
   }
 
-  function drawCircle(ctx, x, y, radius) {
+  function drawPoint(ctx, x, y, radius) {
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
     ctx.strokeStyle = POINT_OUTLINE;
@@ -136,6 +142,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     ctx.stroke();
     ctx.fillStyle = POINT_FILL;
     ctx.fill();
+  }
+
+  function drawBezierVisualCircle() {
+    const controlSide = curve[currentSegment].isEnd ? 0 : 2;
+    const pointOnLine = cubicBezier([curve[currentSegment].x, curve[currentSegment].y],
+                                    [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+                                    [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+                                    [curve[currentSegment+1].x, curve[currentSegment+1].y], t);
+    
+    drawPoint(ctx, pointOnLine[0], pointOnLine[1], 10);
   }
 
   function drawLine(ctx, x1, y1, x2, y2) {
@@ -172,13 +188,24 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function animate() {
-    slider.value = slider.value + .01;
-    slider.dispatchEvent(new Event('input', {bubbles: true, cancelable: true,}));
+    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 3 : 0;
+
+    updateCirclePosition();
     drawCurve();
-    console.log(currentSegment - slider.value);
     if (animatedToggle.checked)
       window.requestAnimationFrame(animate);
   }
+
+  function updateCirclePosition() {
+    if (circleToggle.checked) return;
+    const sliderDivide500 = slider.value / 500;
+    currentSegment = Math.floor(sliderDivide500);
+    t = remap(sliderDivide500, currentSegment, currentSegment + 1, 0, 1);
+  }
+  
+  function remap(value, inMin, inMax, outMin, outMax) {
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
 
   canvas.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
@@ -217,7 +244,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   });
 
   controlToggle.addEventListener('change', () => {
-    drawCurve();
+    if (!animatedToggle.checked)
+      drawCurve();
   });
 
   animatedToggle.addEventListener('change', () => {
@@ -225,8 +253,13 @@ window.addEventListener('DOMContentLoaded', async () => {
       window.requestAnimationFrame(animate);
   });
 
+  circleToggle.addEventListener('change', () => {
+    if (!animatedToggle.checked)
+      drawCurve();
+  });
+
   slider.addEventListener('input', () => {
-    t = slider.value / 100
-    currentSegment = Math.floor(t);
+    updateCirclePosition();
+    drawCurve();
   });
 });
