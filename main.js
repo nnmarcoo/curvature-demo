@@ -125,14 +125,17 @@ window.addEventListener('DOMContentLoaded', async () => {
     drawCurve();
   }
 
-  function drawPoint(ctx, x, y, radius) {
+  function drawPoint(ctx, x, y, radius, strokeColor = POINT_OUTLINE, fillColor = POINT_FILL, strokeWidth = 3, opacity = 1) {
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
-    ctx.strokeStyle = POINT_OUTLINE;
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = strokeWidth;
     ctx.stroke();
-    ctx.fillStyle = POINT_FILL;
+    ctx.fillStyle = fillColor;
+    ctx.save();
+    ctx.globalAlpha = opacity
     ctx.fill();
+    ctx.restore();
   }
 
   function drawBezierVisualCircle() {
@@ -142,7 +145,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                                     [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
                                     [curve[currentSegment+1].x, curve[currentSegment+1].y], t);
     
-    drawPoint(ctx, pointOnLine[0], pointOnLine[1], 10);
+    drawPoint(ctx, pointOnLine[0], pointOnLine[1], 10, '#b86767', '#808080', 2, .5);
   }
 
   function drawLine(ctx, x1, y1, x2, y2) {
@@ -179,7 +182,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function animate() {
-    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 3 : 0;
+    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 3 : 0; // Prob use deltaTime later
 
     updateCirclePosition();
     drawCurve();
