@@ -1,4 +1,5 @@
 window.addEventListener('DOMContentLoaded', async () => {
+  
   const controlToggle = document.getElementById('controls-check');
   const animatedToggle = document.getElementById('animated-check');
   const circleToggle = document.getElementById('hide-circle-check');
@@ -13,8 +14,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   const POINT_RADIUS = 5;
   const CTRL_RADIUS = 6;
 
-  const POINT_HITBOX = POINT_RADIUS * 2;
-  const CTRL_HITBOX = CTRL_RADIUS * 2;
+  const POINT_HITBOX = POINT_RADIUS*2;
+  const CTRL_HITBOX = CTRL_RADIUS*2;
 
   class point {
     constructor(x, y, controls, isEnd = false) {
@@ -48,8 +49,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     shiftControl(i, x, y) {
-      this.controls[i] += x;
-      this.controls[i + 1] += y;
+        this.controls[i    ] += x;
+        this.controls[i + 1] += y;
     }
   }
 
@@ -57,25 +58,26 @@ window.addEventListener('DOMContentLoaded', async () => {
   const ctx = canvas.getContext('2d');
   window.addEventListener('resize', onResize);
   let previousPoint = null,
-    selectedPoint = null,
-    mPrevX = 0,
-    mPrevY = 0,
-    isDragging = false,
-    currentSegment = 0,
-    t = 0.3,
-    k = 0,
-    previousTimestamp = 0;
+      selectedPoint = null,
+      mPrevX = 0,
+      mPrevY = 0,
+      isDragging = false,
+      currentSegment = 0,
+      t = .3,
+      k = 0;
 
-  const initX = window.innerWidth / 2;
-  const initY = window.innerHeight / 2;
+  const initX = window.innerWidth/2;
+  const initY = window.innerHeight/2;
 
   let curve = [
-    new point(initX - 100, initY + 100, [initX, initY + 100], true),
-    new point(initX, initY, [initX - 100, initY, initX + 100, initY]),
-    new point(initX + 100, initY - 100, [initX, initY - 100])
+    new point(initX-100, initY+100, [initX, initY+100], true),
+    new point(initX, initY, [initX-100, initY, initX+100, initY]),
+    new point(initX+100, initY-100, [initX, initY-100])
   ];
 
   onResize();
+
+
 
   function drawCurve() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -85,14 +87,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         ctx.moveTo(previousPoint.x, previousPoint.y);
 
         const controlSide = previousPoint.isEnd ? 0 : 2;
-        ctx.bezierCurveTo(
-          previousPoint.controls[controlSide],
-          previousPoint.controls[controlSide + 1],
-          point.controls[0],
-          point.controls[1],
-          point.x,
-          point.y
-        );
+        ctx.bezierCurveTo(previousPoint.controls[controlSide    ], 
+                          previousPoint.controls[controlSide + 1], 
+                          point.controls[0], 
+                          point.controls[1],
+                          point.x, point.y);
 
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
@@ -104,18 +103,18 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
     previousPoint.draw(ctx);
     previousPoint = null;
-    if (!circleToggle.checked) drawBezierVisualCircle();
+    if (!circleToggle.checked)
+      drawBezierVisualCircle();
   }
 
   function onResize() {
     let ratio = (() => {
       let dpr = window.devicePixelRatio || 1,
-        bsr = ctx.webkitBackingStorePixelRatio ||
-        ctx.mozBackingStorePixelRatio ||
-        ctx.msBackingStorePixelRatio ||
-        ctx.oBackingStorePixelRatio ||
-        ctx.backingStorePixelRatio ||
-        1;
+          bsr = ctx.webkitBackingStorePixelRatio ||
+                ctx.mozBackingStorePixelRatio ||
+                ctx.msBackingStorePixelRatio ||
+                ctx.oBackingStorePixelRatio ||
+                ctx.backingStorePixelRatio || 1;
       return dpr / bsr;
     })();
 
@@ -135,23 +134,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     ctx.stroke();
     ctx.fillStyle = fillColor;
     ctx.save();
-    ctx.globalAlpha = opacity;
+    ctx.globalAlpha = opacity
     ctx.fill();
     ctx.restore();
   }
 
   function drawBezierVisualCircle() {
-    let pointsOnCircle = getPointsOnCircle(t + 0.001, t - 0.001, t);
+    let pointsOnCircle = getPointsOnCircle(t+.001, t-.001, t);
 
-    let circleData = getRadiusAndCenter(
-      pointsOnCircle[0][0],
-      pointsOnCircle[0][1],
-      pointsOnCircle[1][0],
-      pointsOnCircle[1][1],
-      pointsOnCircle[2][0],
-      pointsOnCircle[2][1]
-    );
-    drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, 0.5);
+    let circleData = getRadiusAndCenter(pointsOnCircle[0][0], pointsOnCircle[0][1], pointsOnCircle[1][0], pointsOnCircle[1][1], pointsOnCircle[2][0], pointsOnCircle[2][1]);
+    drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, .5);
     drawPoint(ctx, pointsOnCircle[2][0], pointsOnCircle[2][1], 2, '#b86767');
   }
 
@@ -160,29 +152,26 @@ window.addEventListener('DOMContentLoaded', async () => {
     const points = [];
 
     for (let i = 0; i < 3; i++) {
-      points.push(
-        cubicBezier(
-          [curve[currentSegment].x, curve[currentSegment].y],
-          [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-          [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-          [curve[currentSegment + 1].x, curve[currentSegment + 1].y],
-          [t0, t1, t2][i]
-        )
-      );
+        points.push(cubicBezier(
+            [curve[currentSegment].x, curve[currentSegment].y],
+            [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+            [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+            [curve[currentSegment + 1].x, curve[currentSegment + 1].y],
+            [t0, t1, t2][i]
+        ));
     }
 
-    k = curvature(
-      [curve[currentSegment].x, curve[currentSegment].y],
+    k = curvature([curve[currentSegment].x, curve[currentSegment].y],
       [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
       [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-      [curve[currentSegment + 1].x, curve[currentSegment + 1].y],
-      t
+      [curve[currentSegment + 1].x, curve[currentSegment + 1].y], t
     );
 
     return points;
-  }
+}
 
-  function getRadiusAndCenter(x1, y1, x2, y2, x3, y3) {
+
+  function getRadiusAndCenter(x1, y1, x2, y2, x3, y3) { // gpt
     // Midpoints of chords AB and BC
     const mxAB = (x1 + x2) / 2;
     const myAB = (y1 + y2) / 2;
@@ -206,7 +195,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const k = mPerpAB * h + bPerpAB;
 
     // Radius of the circle
-    const radius = Math.sqrt(Math.pow(x1 - h, 2) + Math.pow(y1 - k, 2));
+    const radius = Math.sqrt(Math.pow((x1 - h), 2) + Math.pow((y1 - k), 2));
 
     return { center: { x: h, y: k }, radius: radius };
   }
@@ -223,53 +212,49 @@ window.addEventListener('DOMContentLoaded', async () => {
   function getSelectedPoint(x, y) {
     let found = null;
     for (const point of curve) {
-      if (Math.abs(x - point.x) < POINT_HITBOX && Math.abs(y - point.y) < POINT_HITBOX) found = point;
-      for (let i = 0; i < point.controls.length; i += 2)
-        if (Math.abs(x - point.controls[i]) < CTRL_HITBOX && Math.abs(y - point.controls[i + 1]) < CTRL_HITBOX) return [point, i];
+      if (Math.abs(x - point.x) < POINT_HITBOX && Math.abs(y - point.y) < POINT_HITBOX)
+        found = point;
+      for (let i = 0; i < point.controls.length; i+=2)
+        if (Math.abs(x - point.controls[i]) < CTRL_HITBOX && Math.abs(y - point.controls[i+1]) < CTRL_HITBOX)
+          return [point, i];
     }
     return found;
   }
 
   function cubicBezier(p0, p1, p2, p3, t) {
-    const x =
-      Math.pow(1 - t, 3) * p0[0] +
-      3 * Math.pow(1 - t, 2) * t * p1[0] +
-      3 * (1 - t) * Math.pow(t, 2) * p2[0] +
-      Math.pow(t, 3) * p3[0];
-    const y =
-      Math.pow(1 - t, 3) * p0[1] +
-      3 * Math.pow(1 - t, 2) * t * p1[1] +
-      3 * (1 - t) * Math.pow(t, 2) * p2[1] +
-      Math.pow(t, 3) * p3[1];
+    const x = Math.pow(1 - t, 3) * p0[0] +
+              3 * Math.pow(1 - t, 2) * t * p1[0] +
+              3 * (1 - t) * Math.pow(t, 2) * p2[0] +
+              Math.pow(t, 3) * p3[0];
+    const y = Math.pow(1 - t, 3) * p0[1] +
+              3 * Math.pow(1 - t, 2) * t * p1[1] +
+              3 * (1 - t) * Math.pow(t, 2) * p2[1] +
+              Math.pow(t, 3) * p3[1];
     return [x, y];
   }
 
   function firstDerivative(p0, p1, p2, p3, t) {
-    const x =
-      3 * Math.pow(1 - t, 2) * (p1[0] - p0[0]) +
-      6 * (1 - t) * t * (p2[0] - p1[0]) +
-      3 * Math.pow(t, 2) * (p3[0] - p2[0]);
-    const y =
-      3 * Math.pow(1 - t, 2) * (p1[1] - p0[1]) +
-      6 * (1 - t) * t * (p2[1] - p1[1]) +
-      3 * Math.pow(t, 2) * (p3[1] - p2[1]);
+    const x = 3 * Math.pow(1 - t, 2) * (p1[0] - p0[0]) +
+              6 * (1 - t) * t * (p2[0] - p1[0]) +
+              3 * Math.pow(t, 2) * (p3[0] - p2[0]);
+    const y = 3 * Math.pow(1 - t, 2) * (p1[1] - p0[1]) +
+              6 * (1 - t) * t * (p2[1] - p1[1]) +
+              3 * Math.pow(t, 2) * (p3[1] - p2[1]);
     return [x, y];
   }
 
   function secondDerivative(p0, p1, p2, p3, t) {
-    const x =
-      6 * (1 - t) * (p2[0] - 2 * p1[0] + p0[0]) +
-      6 * t * (p3[0] - 2 * p2[0] + p1[0]);
-    const y =
-      6 * (1 - t) * (p2[1] - 2 * p1[1] + p0[1]) +
-      6 * t * (p3[1] - 2 * p2[1] + p1[1]);
+    const x = 6 * (1 - t) * (p2[0] - 2 * p1[0] + p0[0]) +
+              6 * t * (p3[0] - 2 * p2[0] + p1[0]);
+    const y = 6 * (1 - t) * (p2[1] - 2 * p1[1] + p0[1]) +
+              6 * t * (p3[1] - 2 * p2[1] + p1[1]);
     return [x, y];
   }
 
   function vectorMagnitude(v) {
     return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
   }
-
+  
   function crossProduct(v1, v2) {
     return v1[0] * v2[1] - v1[1] * v2[0];
   }
@@ -282,18 +267,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     return numerator / denominator;
   }
 
-  function animate(timestamp) {
-    if (!previousTimestamp) previousTimestamp = timestamp;
-    const deltaTime = timestamp - previousTimestamp;
-    previousTimestamp = timestamp;
-
-    const speed = deltaTime * 0.001; // Adjust this value to control the speed of the animation
-
-    slider.value = (parseFloat(slider.value) + speed * 1000) % 1000; // Update the slider value based on deltaTime
+  function animate() {
+    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 1 : 0; // Prob use deltaTime later
 
     updateCirclePosition();
     drawCurve();
-    if (animatedToggle.checked) window.requestAnimationFrame(animate);
+    if (animatedToggle.checked)
+      window.requestAnimationFrame(animate);
   }
 
   function updateCirclePosition() {
@@ -302,19 +282,25 @@ window.addEventListener('DOMContentLoaded', async () => {
     currentSegment = Math.floor(sliderDivide500);
     t = remap(sliderDivide500, currentSegment, currentSegment + 1, 0, 1);
   }
-
+  
   function remap(value, inMin, inMax, outMin, outMax) {
-    return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-  }
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
 
   canvas.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     canvas.style.cursor = 'grabbing';
 
     if (!selectedPoint.length) {
-      selectedPoint.shift(e.clientX - mPrevX, e.clientY - mPrevY);
-    } else {
-      selectedPoint[0].shiftControl(selectedPoint[1], e.clientX - mPrevX, e.clientY - mPrevY);
+      selectedPoint.shift(e.clientX - mPrevX,
+                          e.clientY - mPrevY
+      );
+    }
+    else {
+      selectedPoint[0].shiftControl(selectedPoint[1],
+                                    e.clientX - mPrevX,
+                                    e.clientY - mPrevY
+      );
     }
 
     mPrevX = e.clientX;
@@ -338,15 +324,18 @@ window.addEventListener('DOMContentLoaded', async () => {
   });
 
   controlToggle.addEventListener('change', () => {
-    if (!animatedToggle.checked) drawCurve();
+    if (!animatedToggle.checked)
+      drawCurve();
   });
 
   animatedToggle.addEventListener('change', () => {
-    if (animatedToggle.checked) window.requestAnimationFrame(animate);
+    if (animatedToggle.checked)
+      window.requestAnimationFrame(animate);
   });
 
   circleToggle.addEventListener('change', () => {
-    if (!animatedToggle.checked) drawCurve();
+    if (!animatedToggle.checked)
+      drawCurve();
   });
 
   slider.addEventListener('input', () => {
