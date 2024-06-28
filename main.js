@@ -90,7 +90,13 @@ window.addEventListener('DOMContentLoaded', async () => {
                           previousPoint.controls[controlSide + 1], 
                           point.controls[0], 
                           point.controls[1],
-                          point.x, point.y);  
+                          point.x, point.y);
+
+        console.log(curvature([previousPoint.x, previousPoint.y],
+                  [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
+                  [point.controls[0], point.controls[1]],
+                  [point.x, point.y]
+        ));
 
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
@@ -223,6 +229,41 @@ window.addEventListener('DOMContentLoaded', async () => {
               3 * (1 - t) * Math.pow(t, 2) * p2[1] +
               Math.pow(t, 3) * p3[1];
     return [x, y];
+  }
+
+  function firstDerivative(p0, p1, p2, p3, t) {
+    const x = 3 * Math.pow(1 - t, 2) * (p1[0] - p0[0]) +
+              6 * (1 - t) * t * (p2[0] - p1[0]) +
+              3 * Math.pow(t, 2) * (p3[0] - p2[0]);
+    const y = 3 * Math.pow(1 - t, 2) * (p1[1] - p0[1]) +
+              6 * (1 - t) * t * (p2[1] - p1[1]) +
+              3 * Math.pow(t, 2) * (p3[1] - p2[1]);
+    return [x, y];
+  }
+
+  function secondDerivative(p0, p1, p2, p3, t) {
+    const x = 6 * (1 - t) * (p2[0] - 2 * p1[0] + p0[0]) +
+              6 * t * (p3[0] - 2 * p2[0] + p1[0]);
+    const y = 6 * (1 - t) * (p2[1] - 2 * p1[1] + p0[1]) +
+              6 * t * (p3[1] - 2 * p2[1] + p1[1]);
+    return [x, y];
+  }
+
+  function vectorMagnitude(v) {
+    return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+  }
+  
+  function crossProduct(v1, v2) {
+    return v1[0] * v2[1] - v1[1] * v2[0];
+  }
+
+
+  function curvature(p0, p1, p2, p3, t) {
+    const d1 = firstDerivative(p0, p1, p2, p3, t);
+    const d2 = secondDerivative(p0, p1, p2, p3, t);
+    const numerator = Math.abs(crossProduct(d1, d2));
+    const denominator = Math.pow(vectorMagnitude(d1), 3);
+    return numerator / denominator;
   }
 
   function animate() {
