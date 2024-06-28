@@ -7,9 +7,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   const speedSlider = document.getElementById('speed-slider');
   const stepsButton = document.getElementById('steps-preset');
   const ellipseButton = document.getElementById('ellipse-preset');
+  const heartButton = document.getElementById('heart-preset');
 
   const kappa = document.getElementById('kappa');
   const radius = document.getElementById('radius');
+  const time = document.getElementById('time');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';
@@ -69,7 +71,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       mPrevY = 0,
       isDragging = false,
       currentSegment = 0,
-      t = .3,
+      t = 0,
       lastTime = 0,
       interval = 1,
       timer = 0;
@@ -155,6 +157,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     drawPoint(ctx, pointsOnCircle[2][0], pointsOnCircle[2][1], 2, '#b86767');
 
     radius.textContent = circleData.radius.toFixed(1);
+    time.textContent = t.toFixed(2);
   }
 
   function getPointsOnCircle(t0, t1, t2) {
@@ -374,6 +377,15 @@ window.addEventListener('DOMContentLoaded', async () => {
       new point(initX, initY+100, [initX-100, initY+100], true),
       new point(initX, initY-100, [initX-100, initY-100, initX+100, initY-100]),
       new point(initX, initY+100, [initX+100, initY+100])
+    ];
+    drawCurve();
+  });
+
+  heartButton.addEventListener('click', () => {
+    curve = [
+      new point(initX, initY-100, [initX-100, initY-200], true),
+      new point(initX, initY+100, [initX-200, initY-100, initX+200, initY-100]),
+      new point(initX, initY-100, [initX+100, initY-200])
     ];
     drawCurve();
   });
