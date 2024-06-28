@@ -63,7 +63,8 @@ window.addEventListener('DOMContentLoaded', async () => {
       mPrevY = 0,
       isDragging = false,
       currentSegment = 0,
-      t = .3;
+      t = .3,
+      k = 0;
 
   const initX = window.innerWidth/2;
   const initY = window.innerHeight/2;
@@ -91,12 +92,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                           point.controls[0], 
                           point.controls[1],
                           point.x, point.y);
-
-        console.log(curvature([previousPoint.x, previousPoint.y],
-                  [previousPoint.controls[controlSide], previousPoint.controls[controlSide + 1]],
-                  [point.controls[0], point.controls[1]],
-                  [point.x, point.y]
-        ));
 
         ctx.strokeStyle = LINE_FILL;
         ctx.lineWidth = CURVE_THICKNESS;
@@ -165,6 +160,13 @@ window.addEventListener('DOMContentLoaded', async () => {
             [t0, t1, t2][i]
         ));
     }
+
+    k = curvature([curve[currentSegment].x, curve[currentSegment].y],
+      [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+      [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+      [curve[currentSegment + 1].x, curve[currentSegment + 1].y], t
+    );
+
     return points;
 }
 
@@ -256,7 +258,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   function crossProduct(v1, v2) {
     return v1[0] * v2[1] - v1[1] * v2[0];
   }
-
 
   function curvature(p0, p1, p2, p3, t) {
     const d1 = firstDerivative(p0, p1, p2, p3, t);
