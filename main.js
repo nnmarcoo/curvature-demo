@@ -3,7 +3,13 @@ window.addEventListener('DOMContentLoaded', async () => {
   const controlToggle = document.getElementById('controls-check');
   const animatedToggle = document.getElementById('animated-check');
   const circleToggle = document.getElementById('hide-circle-check');
-  const slider = document.getElementById('slider');
+  const animationSlider = document.getElementById('animation-slider');
+  const speedSlider = document.getElementById('speed-slider');
+  const stepsButton = document.getElementById('steps-preset');
+  const ellipseButton = document.getElementById('ellipse-preset');
+
+  const kappa = document.getElementById('kappa');
+  const radius = document.getElementById('radius');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';
@@ -64,7 +70,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       isDragging = false,
       currentSegment = 0,
       t = .3,
-      k = 0;
+      lastTime = 0,
+      interval = 1,
+      timer = 0;
 
   const initX = window.innerWidth/2;
   const initY = window.innerHeight/2;
@@ -145,6 +153,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     let circleData = getRadiusAndCenter(pointsOnCircle[0][0], pointsOnCircle[0][1], pointsOnCircle[1][0], pointsOnCircle[1][1], pointsOnCircle[2][0], pointsOnCircle[2][1]);
     drawPoint(ctx, circleData.center.x, circleData.center.y, circleData.radius, '#b86767', '#808080', 3, .5);
     drawPoint(ctx, pointsOnCircle[2][0], pointsOnCircle[2][1], 2, '#b86767');
+
+    radius.textContent = circleData.radius.toFixed(1);
   }
 
   function getPointsOnCircle(t0, t1, t2) {
@@ -152,24 +162,24 @@ window.addEventListener('DOMContentLoaded', async () => {
     const points = [];
 
     for (let i = 0; i < 3; i++) {
-        points.push(cubicBezier(
-            [curve[currentSegment].x, curve[currentSegment].y],
-            [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
-            [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
-            [curve[currentSegment + 1].x, curve[currentSegment + 1].y],
-            [t0, t1, t2][i]
-        ));
+      points.push(cubicBezier(
+        [curve[currentSegment].x, curve[currentSegment].y],
+        [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+        [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+        [curve[currentSegment + 1].x, curve[currentSegment + 1].y],
+        [t0, t1, t2][i]
+      ));
     }
 
-    k = curvature([curve[currentSegment].x, curve[currentSegment].y],
+    kappa.textContent = curvature(
+      [curve[currentSegment].x, curve[currentSegment].y],
       [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
       [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
       [curve[currentSegment + 1].x, curve[currentSegment + 1].y], t
-    );
+    ).toFixed(11);
 
     return points;
-}
-
+  }
 
   function getRadiusAndCenter(x1, y1, x2, y2, x3, y3) { // gpt
     // Midpoints of chords AB and BC
@@ -267,18 +277,25 @@ window.addEventListener('DOMContentLoaded', async () => {
     return numerator / denominator;
   }
 
-  function animate() {
-    slider.value =  parseInt(slider.value) !== 999 ? parseInt(slider.value) + 1 : 0; // Prob use deltaTime later
-
-    updateCirclePosition();
-    drawCurve();
+  function animate(timestamp) {
+    const deltaTime = timestamp - lastTime;
+    lastTime = timestamp;
+    if (timer >= interval) {
+      animationSlider.value =  parseInt(animationSlider.value) !== 999 ? parseInt(animationSlider.value) + parseInt(speedSlider.value) : 0;
+      updateCirclePosition();
+      drawCurve();
+      timer = 0;
+    }
+    else
+      timer += deltaTime;
+  
     if (animatedToggle.checked)
       window.requestAnimationFrame(animate);
   }
 
   function updateCirclePosition() {
     if (circleToggle.checked) return;
-    const sliderDivide500 = slider.value / 500;
+    const sliderDivide500 = animationSlider.value / 500;
     currentSegment = Math.floor(sliderDivide500);
     t = remap(sliderDivide500, currentSegment, currentSegment + 1, 0, 1);
   }
@@ -330,7 +347,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   animatedToggle.addEventListener('change', () => {
     if (animatedToggle.checked)
-      window.requestAnimationFrame(animate);
+      animate(0);
   });
 
   circleToggle.addEventListener('change', () => {
@@ -338,8 +355,26 @@ window.addEventListener('DOMContentLoaded', async () => {
       drawCurve();
   });
 
-  slider.addEventListener('input', () => {
+  animationSlider.addEventListener('input', () => {
     updateCirclePosition();
+    drawCurve();
+  });
+
+  stepsButton.addEventListener('click', () => {
+    curve = [
+      new point(initX-100, initY+100, [initX, initY+100], true),
+      new point(initX, initY, [initX-100, initY, initX+100, initY]),
+      new point(initX+100, initY-100, [initX, initY-100])
+    ];
+    drawCurve();
+  });
+
+  ellipseButton.addEventListener('click', () => {
+    curve = [
+      new point(initX, initY+100, [initX-100, initY+100], true),
+      new point(initX, initY-100, [initX-100, initY-100, initX+100, initY-100]),
+      new point(initX, initY+100, [initX+100, initY+100])
+    ];
     drawCurve();
   });
 });
