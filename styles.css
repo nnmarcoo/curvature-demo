@@ -111,6 +111,7 @@ body {
   top: 0;
   right: 0;
   margin: 25px;
+  font-weight: bold;
 }
 
 #info-button:hover {
