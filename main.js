@@ -318,8 +318,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   function animate(timestamp) {
     const deltaTime = timestamp - lastTime;
     lastTime = timestamp;
-    animationSlider.value =  parseInt(animationSlider.value) !== 999 ? parseInt(animationSlider.value) + parseInt(speedSlider.value) : 0;
     if (timer >= interval) {
+    animationSlider.value =  parseInt(animationSlider.value) !== 999 ? parseInt(animationSlider.value) + parseInt(speedSlider.value) : 0;
       updateCirclePosition();
       drawCurve();
       timer = 0;
