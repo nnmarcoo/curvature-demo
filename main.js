@@ -8,10 +8,32 @@ window.addEventListener('DOMContentLoaded', async () => {
   const stepsButton = document.getElementById('steps-preset');
   const ellipseButton = document.getElementById('ellipse-preset');
   const heartButton = document.getElementById('heart-preset');
+  const infoButton = document.getElementById('info-button');
+  const info = document.getElementById('info');
 
   const kappa = document.getElementById('kappa');
   const radius = document.getElementById('radius');
-  const time = document.getElementById('time');
+  const timeDisplay = document.getElementById('time-display');
+
+  const time = document.getElementsByClassName('time');
+  const p0x = document.getElementsByClassName('p0x');
+  const p1x = document.getElementsByClassName('p1x');
+  const p2x = document.getElementsByClassName('p2x');
+  const p3x = document.getElementsByClassName('p3x');
+  
+  const p0y = document.getElementsByClassName('p0y');
+  const p1y = document.getElementsByClassName('p1y');
+  const p2y = document.getElementsByClassName('p2y');
+  const p3y = document.getElementsByClassName('p3y');
+
+  const bpx = document.getElementsByClassName('bpx')
+  const bpy = document.getElementsByClassName('bpy');
+  const bppx = document.getElementsByClassName('bppx');
+  const bppy = document.getElementsByClassName('bppy');
+
+  const n = document.getElementsByClassName('n');
+  const d = document.getElementsByClassName('d');
+  const kappaResult = document.getElementsByClassName('kappa-result');
 
   const LINE_FILL = '#9EC8B9';
   const POINT_FILL = '#1B4242';
@@ -24,6 +46,8 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   const POINT_HITBOX = POINT_RADIUS*2;
   const CTRL_HITBOX = CTRL_RADIUS*2;
+
+  info.style.display = 'none';
 
   class point {
     constructor(x, y, controls, isEnd = false) {
@@ -74,7 +98,12 @@ window.addEventListener('DOMContentLoaded', async () => {
       t = 0,
       lastTime = 0,
       interval = 1,
-      timer = 0;
+      timer = 0,
+      d1 = 0,
+      d2 = 0,
+      numerator = 0,
+      denominator = 0;
+      
 
   const initX = window.innerWidth/2;
   const initY = window.innerHeight/2;
@@ -157,7 +186,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     drawPoint(ctx, pointsOnCircle[2][0], pointsOnCircle[2][1], 2, '#b86767');
 
     radius.textContent = circleData.radius.toFixed(1);
-    time.textContent = t.toFixed(2);
+    timeDisplay.textContent = t.toFixed(2);
   }
 
   function getPointsOnCircle(t0, t1, t2) {
@@ -180,6 +209,12 @@ window.addEventListener('DOMContentLoaded', async () => {
       [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
       [curve[currentSegment + 1].x, curve[currentSegment + 1].y], t
     ).toFixed(11);
+
+     if (info.style.display === 'flex')
+      fillEValues([curve[currentSegment].x, curve[currentSegment].y],
+      [curve[currentSegment].controls[controlSide], curve[currentSegment].controls[controlSide + 1]],
+      [curve[currentSegment + 1].controls[0], curve[currentSegment + 1].controls[1]],
+      [curve[currentSegment + 1].x, curve[currentSegment + 1].y]);
 
     return points;
   }
@@ -273,10 +308,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 
   function curvature(p0, p1, p2, p3, t) {
-    const d1 = firstDerivative(p0, p1, p2, p3, t);
-    const d2 = secondDerivative(p0, p1, p2, p3, t);
-    const numerator = Math.abs(crossProduct(d1, d2));
-    const denominator = Math.pow(vectorMagnitude(d1), 3);
+    d1 = firstDerivative(p0, p1, p2, p3, t);
+    d2 = secondDerivative(p0, p1, p2, p3, t);
+    numerator = Math.abs(crossProduct(d1, d2));
+    denominator = Math.pow(vectorMagnitude(d1), 3);
     return numerator / denominator;
   }
 
@@ -306,6 +341,42 @@ window.addEventListener('DOMContentLoaded', async () => {
   function remap(value, inMin, inMax, outMin, outMax) {
     return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
+
+  function fillEValues(p0, p1, p2, p3) { // this is so bad
+    for (let timeValue of time)
+      timeValue.textContent = t.toFixed(2);
+
+    for (let p0xV of p0x)
+      p0xV.textContent = Math.round(p0[0]);
+    for (let p1xV of p1x)
+      p1xV.textContent = Math.round(p1[0]);
+    for (let p2xV of p2x)
+      p2xV.textContent = Math.round(p2[0]);
+    for (let p3xV of p3x)
+      p3xV.textContent = Math.round(p3[0]);
+    for (let p0yV of p0y)
+      p0yV.textContent = Math.round(p0[1]);
+    for (let p1yV of p1y)
+      p1yV.textContent = Math.round(p1[1]);
+    for (let p2yV of p2y)
+      p2yV.textContent = Math.round(p2[1]);
+    for (let p3yV of p3y)
+      p3yV.textContent = Math.round(p3[1]);
+    for (let bpxV of bpx)
+      bpxV.textContent = Math.round(d1[0]);
+    for (let bpyV of bpy)
+      bpyV.textContent = Math.round(d1[1]);
+    for (let bppxV of bppx)
+      bppxV.textContent = Math.round(d2[0]);
+    for (let bppyV of bppy)
+      bppyV.textContent = Math.round(d2[1]);
+    for (let nV of n)
+      nV.textContent = Math.round(numerator);
+    for (let dV of d)
+      dV.textContent = Math.round(denominator);
+
+    kappaResult[0].textContent = parseFloat(kappa.textContent).toFixed(5);
+  }
 
   canvas.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
@@ -388,5 +459,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       new point(initX, initY-100, [initX+100, initY-200])
     ];
     drawCurve();
+  });
+
+  infoButton.addEventListener('click', () => {
+    info.style.display = info.style.display === 'none' ? 'flex' : 'none';
   });
 });

@@ -53,24 +53,33 @@ body {
   border: none;
 }
 
+.hr2 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: #b86767;
+  height: 2px;
+  border: none;
+}
+
 .slider {
   width: 130px;
 }
 
-.button {
+.button-preset {
   width: 130px;
   border-radius: 3px;
   border: none;
   background-color: #0075ff;
+  color: black;
   transition: background-color .2s ease, transform .2s ease;
   font-size: 16px;
 }
 
-.button:hover {
+.button-preset:hover {
   background-color: #005cc8;
 }
 
-.button:active {
+.button-preset:active {
   background-color: #b86767;
   transform: scale(.95);
 }
@@ -78,6 +87,39 @@ body {
 .controls div {
   display: flex;
   align-items: center;
+}
+
+#info {
+  position: absolute;
+  top: 70px;
+  right: 50px;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#info-button {
+  font-size: 25px;
+  border: none;
+  border-radius: 10px;
+  background-color: #0075ff;
+  width: 35px;
+  height: 35px;
+  color: whitesmoke;
+  transition: background-color .2s ease, transform .2s ease;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 25px;
+}
+
+#info-button:hover {
+  background-color: #005cc8;
+}
+
+#info-button:active {
+  background-color: #b86767;
+  transform: scale(.95);
 }
 
 input[type="checkbox"] {
@@ -95,4 +137,57 @@ label {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.math-group {
+  margin-bottom: 10px;
+}
+
+.fraction {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+.fraction > span {
+    display: block;
+    padding: 0 0.1em;
+}
+.fraction span.bottom {
+    border-top: thin solid black;
+}
+.power {
+    vertical-align: super;
+    font-size: 0.75em;
+}
+.subscript {
+    vertical-align: sub;
+    font-size: 0.75em;
+}
+
+.highlight {
+  color: rgb(188, 255, 202);
+}
+
+.highlight2 {
+  color: rgb(255, 182, 182);
+}
+
+.highlight3 {
+  color: rgb(166, 255, 255);
+}
+
+.highlight4 {
+  color: rgb(231, 255, 182);
+}
+
+.highlight5 {
+  color:#efb0ff;
+}
+
+.highlight6 {
+  color:#9ba5ff;
+}
+
+.highlight7 {
+  color:rgb(225, 77, 77);
 }

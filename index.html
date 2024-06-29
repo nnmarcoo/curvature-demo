@@ -9,9 +9,9 @@
 </head>
 <body>
   <div class="controls">
-    <button class="button" id="steps-preset">Steps</button>
-    <button class="button" id="ellipse-preset">Ellipse</button>
-    <button class="button" id="heart-preset">Heart</button>
+    <button class="button-preset" id="steps-preset">Steps</button>
+    <button class="button-preset" id="ellipse-preset">Ellipse</button>
+    <button class="button-preset" id="heart-preset">Heart</button>
     <hr class="hr"/>
     <div>
       <input type="checkbox" id="controls-check">
@@ -40,7 +40,50 @@
         <p>r =</p> <p id="radius" class="data-value"></p>
       </div>
       <div>
-        <p>t =</p> <p id="time" class="data-value"></p>
+        <p>t =</p> <p id="time-display" class="data-value"></p>
+      </div>
+    </div>
+  </div>
+  <button id="info-button">&#x2139;</button>
+  <div id="info">
+    <div>
+      <span>B(<span class="highlight2">t</span>) &nbsp;&nbsp;= (1-<span class="highlight2">t</span>)<sup>3</sup><span class="highlight">P<sub>0</sub></span> + 3(1-<span class="highlight2">t</span>)<sup>2</sup><span class="highlight2">t</span><span class="highlight">P<sub>1</sub></span> + 3(1-<span class="highlight2">t</span>)<span class="highlight2">t</span><sup>2</sup><span class="highlight">P<sub>2</sub></span> + <span class="highlight2">t</span><sup>3</sup><span class="highlight">P<sub>3</sub></span></span>
+    </div>
+    <div>
+      <span>B'(<span class="highlight2">t</span>) &nbsp;= 3(1-<span class="highlight2">t</span>)<sup>2</sup>(<span class="highlight">P<sub>1</sub></span> - <span class="highlight">P<sub>0</sub></span>) + 6(1-<span class="highlight2">t</span>)<span class="highlight2">t</span>(<span class="highlight">P<sub>2</sub></span> - <span class="highlight">P<sub>1</sub></span>) + 3<span class="highlight2">t</span><sup>2</sup>(<span class="highlight">P<sub>3</sub></span> - <span class="highlight">P<sub>2</sub></span>)</span>
+    </div>
+    <div>
+      <span>B''(<span class="highlight2">t</span>) = 6(1-<span class="highlight2">t</span>)(<span class="highlight">P<sub>2</sub></span> - 2<span class="highlight">P<sub>1</sub></span> + <span class="highlight">P<sub>0</sub></span>) + 6<span class="highlight2">t</span>(<span class="highlight">P<sub>3</sub></span> - 2<span class="highlight">P<sub>2</sub></span> + <span class="highlight">P<sub>1</sub></span>)</span>
+    </div>
+    <hr class="hr2"/>
+    <div class="math-group">
+      <div>
+        <span>B'<sub>x</sub>(<span class="highlight2 time">t</span>) &nbsp;= 3(1-<span class="highlight2 time">t</span>)<sup>2</sup>(<span class="highlight p1x">P<sub>1<sub>x</sub></span> - <span class="highlight p0x">P<sub>0<sub>x</sub></span>) + 6(1-<span class="highlight2 time">t</span>)<span class="highlight2 time">t</span>(<span class="highlight p2x">P<sub>2<sub>x</sub></span> - <span class="highlight p1x">P<sub>1<sub>x</sub></span>) + 3(<span class="highlight2 time">t</span>)<sup>2</sup>(<span class="highlight p3x">P<sub>3<sub>x</sub></span> - <span class="highlight p2x">P<sub>2<sub>x</sub></span>) = <span class="bpx highlight3">...</span>
+      </div>
+      <div>
+        <span>B'<sub>y</sub>(<span class="highlight2 time">t</span>) &nbsp;= 3(1-<span class="highlight2 time">t</span>)<sup>2</sup>(<span class="highlight p1y">P<sub>1<sub>y</sub></span> - <span class="highlight p0y">P<sub>0<sub>y</sub></span>) + 6(1-<span class="highlight2 time">t</span>)<span class="highlight2 time">t</span>(<span class="highlight p2y">P<sub>2<sub>y</sub></span> - <span class="highlight p1y">P<sub>1<sub>y</sub></span>) + 3(<span class="highlight2 time">t</span>)<sup>2</sup>(<span class="highlight p3y">P<sub>3<sub>y</sub></span> - <span class="highlight p2y">P<sub>2<sub>y</sub></span>) = <span class="bpy highlight3">...</span>
+      </div>
+    </div>
+    <div class="math-group">
+      <div>
+        <span>B''<sub>x</sub>(<span class="highlight2 time">t</span>) = 6(1-<span class="highlight2 time">t</span>)(<span class="highlight p2x">P<sub>2<sub>x</sub></span> - 2(<span class="highlight p1x">P<sub>1<sub>x</sub></span>) + <span class="highlight p0x">P<sub>0<sub>x</sub></span>) + 6(<span class="highlight2 time">t</span>)(<span class="highlight p3x">P<sub>3<sub>x</sub></span> - 2(<span class="highlight p2x">P<sub>2<sub>x</sub></span>) + <span class="highlight p1x">P<sub>1<sub>x</sub></span>) = <span class="bppx highlight4">...</span>
+      </div>
+      <div>
+        <span>B''<sub>y</sub>(<span class="highlight2 time">t</span>) = 6(1-<span class="highlight2 time">t</span>)(<span class="highlight p2y">P<sub>2<sub>y</sub></span> - 2(<span class="highlight p1y">P<sub>1<sub>y</sub></span>) + <span class="highlight p0y">P<sub>0<sub>y</sub></span>) + 6(<span class="highlight2 time">t</span>)(<span class="highlight p3y">P<sub>3<sub>y</sub></span> - 2(<span class="highlight p2y">P<sub>2<sub>y</sub></span>) + <span class="highlight p1y">P<sub>1<sub>y</sub></span>) = <span class="bppy highlight4">...</span>
+    </div>
+      </div>
+      <div class="math-group">
+        <div>
+          <span>n = |&lt;<span class="bpx highlight3">...</span>, <span class="bpy highlight3">...</span>&gt; &times; &lt;<span class="bppx highlight4">...</span>, <span class="bppy highlight4">...</span>&gt;| = <span class="n highlight5">...</span>
+        </div>
+        <div>
+          <span>d = ||&lt;<span class="bpx highlight3">...</span>, <span class="bpy highlight3">...</span>&gt;||<sup>3</sup> = <span class="d highlight6">...</span>
+        </div>
+        <div class="math-group">
+          <div>
+            <span>&kappa; = </span><span class="n highlight5">...</span> / <span class="d highlight6">...</span> = <span class="kappa-result highlight7">...</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
