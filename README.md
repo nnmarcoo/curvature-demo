@@ -1,2 +1,2 @@
 # curvature-demo
-calc math project :)
+calc math project :^)
