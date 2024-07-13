@@ -96,9 +96,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       isDragging = false,
       currentSegment = 0,
       t = 0,
-      lastTime = 0,
-      interval = 1,
-      timer = 0,
       d1 = 0,
       d2 = 0,
       numerator = 0,
@@ -315,17 +312,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     return numerator / denominator;
   }
 
-  function animate(timestamp) {
-    const deltaTime = timestamp - lastTime;
-    lastTime = timestamp;
-    if (timer >= interval) {
+  function animate() {
     animationSlider.value =  parseInt(animationSlider.value) !== 999 ? parseInt(animationSlider.value) + parseInt(speedSlider.value) : 0;
-      updateCirclePosition();
-      drawCurve();
-      timer = 0;
-    }
-    else
-      timer += deltaTime;
+    updateCirclePosition();
+    drawCurve();
   
     if (animatedToggle.checked)
       window.requestAnimationFrame(animate);
@@ -421,7 +411,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   animatedToggle.addEventListener('change', () => {
     if (animatedToggle.checked)
-      animate(0);
+      animate();
   });
 
   circleToggle.addEventListener('change', () => {
